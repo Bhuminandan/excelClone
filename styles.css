@@ -69,12 +69,12 @@ body {
 .active-toolbar-li {
   padding: 5px 10px;
   color: var(--green-);
-  background-color: white;
+  background-color: #f7f7f7;
   cursor: pointer;
 }
 
 .editing-tools {
-  border: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
   background: #f7f7f7;
   display: flex;
   align-items: center;
@@ -188,9 +188,9 @@ table,
 th,
 td,
 tr {
-  border: 1px solid black;
+  border: 2px solid rgb(175, 175, 175);
   border-collapse: collapse;
-  padding: 10px 40px;
+  padding: 10px 20px;
   overflow: auto;
   outline: none;
 }
@@ -208,6 +208,23 @@ thead tr th {
 
 tbody > tr > td {
   text-align: center;
+}
+
+.text-styling-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.font-family select {
+  padding: 5px 10px;
+  outline: none;
+  border: 1px solid rgb(230, 230, 230);
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
 }
 
 .text-Styling {

@@ -21,6 +21,7 @@ const cutBtn = document.querySelector(".cut");
 const copyBtn = document.querySelector(".copy");
 const formatBtn = document.querySelector(".format");
 const pasteBtn = document.querySelector(".paste-icon-div");
+const select = document.getElementById('select');
 
 // Colgeneration to Avoid Repetation
 // Util function for cols
@@ -83,19 +84,19 @@ function renderExistingStyles(currCell) {
     if (currCell.style.fontWeight === 'bold') {
         boldBtn.style.backgroundColor = "rgba(214, 214, 214, 0.946)";
     } else {
-        boldBtn.style.backgroundColor = "rgba(251, 251, 251, 0.946)";
+        boldBtn.style.backgroundColor = "#F7F7F7";
     }
 
     if (currCell.style.fontStyle === "italic") {
         italicBtn.style.backgroundColor = "rgba(214, 214, 214, 0.946)";
     } else {
-        italicBtn.style.backgroundColor = "rgba(251, 251, 251, 0.946)";
+        italicBtn.style.backgroundColor = "#F7F7F7";
     }
 
     if (currCell.style.textDecoration === "underline") {
         underlineBtn.style.backgroundColor = "rgba(214, 214, 214, 0.946)";
     } else {
-        underlineBtn.style.backgroundColor = "rgba(251, 251, 251, 0.946)";
+        underlineBtn.style.backgroundColor = "#F7F7F7";
     }
 }
 
@@ -119,8 +120,8 @@ cutBtn.addEventListener("click", () => {
 pasteBtn.addEventListener("click", () => {
     if (copiedText) {
         currCell.innerText = copiedText;
-        renderExistingStyles(currCell);
     }
+    renderExistingStyles(currCell);
 })
 
 
@@ -155,4 +156,13 @@ underlineBtn.addEventListener("click", () => {
         renderExistingStyles(currCell);
     }
 })
+
+
+select.addEventListener('change', function handleChange(event) {
+    // console.log(event.target.value);
+    let fontName = event.target.value;
+    if (currCell) {
+        currCell.style.fontFamily = fontName;
+    }
+});
 
