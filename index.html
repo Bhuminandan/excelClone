@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./styles.css" />
+    <title>Excel</title>
+  </head>
+  <body>
+    <div class="container">
+      <div class="container-top">
+        <div class="sheet-heading">Shee 1</div>
+        <div class="toolbar-options">
+          <ul class="toolbar-options-ul">
+            <li class="toolbar-options-li">
+              <div class="li-heading active-toolbar-li">Home</div>
+            </li>
+            <li class="toolbar-options-li">Insert</li>
+            <li class="toolbar-options-li">Draw</li>
+            <li class="toolbar-options-li">Page Layout</li>
+            <li class="toolbar-options-li">Formulas</li>
+            <li class="toolbar-options-li">Data</li>
+            <li class="toolbar-options-li">Review</li>
+            <li class="toolbar-options-li">View</li>
+            <li class="toolbar-options-li">Acrobat</li>
+          </ul>
+          <div class="editing-tools">
+            <div class="paste-icon-div">
+              <img src="./assets/Copy-Paste-icon.svg" alt="paste icon" />
+            </div>
+            <div class="cut-copy-format-div">
+              <div class="cut ccf-div">
+                <img src="./assets/scissors icon.svg" alt="cut icon" />
+                <p>Cut</p>
+              </div>
+              <div class="copy ccf-div">
+                <img src="./assets/paper.svg" alt="copy icon" />
+                <p>Copy</p>
+              </div>
+              <div class="cut ccf-div">
+                <img src="./assets/paintbrush icon.svg" alt="format icon" />
+                <p>Format</p>
+              </div>
+            </div>
+            <div class="text-Styling">
+              <div class="bold-text text-style-ele">
+                <strong>B</strong>
+              </div>
+              <div class="italic-text text-style-ele">
+                <strong>I</strong>
+              </div>
+              <div class="underline-text text-style-ele">
+                <strong><u>U</u></strong>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="formulation-and-current-cell-div">
+          <div class="current-cell">
+            <!-- <input type="text" name="1A" id="currDiv" value="A1" /> -->
+            <!-- <strong>A1</strong> -->
+          </div>
+          <div class="formulations">
+            <p>fx</p>
+            <input type="text" name="fx" id="formulation" />
+          </div>
+        </div>
+      </div>
+      <div class="table-container">
+        <table id="table">
+          <thead id="thead">
+            <tr id="head-tr">
+              <th class="emty-cell"></th>
+              <!-- <th>A</th>
+              <th>B</th>
+              <th>C</th>
+              <th>A</th>
+              <th>A</th>
+              <th>A</th> -->
+            </tr>
+          </thead>
+          <tbody id="tbody">
+            <!-- <tr>
+              <td>1</td>
+              <td>1</td>
+              <td>1</td>
+              <td>1</td>
+              <td>1</td>
+            </tr>
+            <tr>
+              <td>1</td>
+              <td>1</td>
+              <td>1</td>
+              <td>1</td>
+              <td>1</td>
+            </tr> -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <script src="./script.js"></script>
+  </body>
+</html>
