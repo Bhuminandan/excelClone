@@ -4,6 +4,13 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+      integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
     <link rel="stylesheet" href="./styles.css" />
     <title>Excel</title>
   </head>
@@ -26,6 +33,7 @@
             <li class="toolbar-options-li">Acrobat</li>
           </ul>
           <div class="editing-tools">
+            <div class="heaing">Copy Paste Div</div>
             <div class="paste-icon-div">
               <img src="./assets/Copy-Paste-icon.svg" alt="paste icon" />
             </div>
@@ -69,9 +77,6 @@
                   <option value="30">30</option>
                   <option value="32">32</option>
                 </select>
-                <div class="color-input">
-                  <input type="color" name="hexcolor" id="hexcolorInput" />
-                </div>
               </div>
               <div class="text-Styling">
                 <div class="bold-text text-style-ele">
@@ -82,6 +87,29 @@
                 </div>
                 <div class="underline-text text-style-ele">
                   <strong><u>U</u></strong>
+                </div>
+              </div>
+            </div>
+            <div class="text-styling-container">
+              <div class="color-input">
+                <label for="hexcolor">Text Color</label>
+                <input type="color" name="hexcolor" id="hexcolorInput" />
+              </div>
+              <div class="color-input-bg color-input">
+                <label for="hexcolor">Cell Bg Color</label>
+                <input type="color" name="hexcolor" id="hexcolorInputBg" />
+              </div>
+            </div>
+            <div class="text-styling-container">
+              <div class="align-text-div">
+                <div class="align-left align-item">
+                  <i class="fa-solid fa-align-left"></i>
+                </div>
+                <div class="align-middle align-item">
+                  <i class="fa-solid fa-align-center"></i>
+                </div>
+                <div class="align-right align-item">
+                  <i class="fa-solid fa-align-right"></i>
                 </div>
               </div>
             </div>

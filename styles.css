@@ -211,12 +211,15 @@ tbody > tr > td {
 }
 
 .text-styling-container {
+  /* border: 1px solid red; */
+  width: 12vw;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   justify-content: space-around;
   gap: 20px;
   margin-top: 10px;
+  padding-left: 40px;
 }
 
 .font-family select {
@@ -227,8 +230,14 @@ tbody > tr > td {
   font-size: 16px;
   cursor: pointer;
 }
-
-.font-size .color-input input {
+.color-input {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: center;
+  font-weight: 700;
+}
+.color-input input {
   width: 50px;
   height: 30px;
   border: none;
@@ -256,6 +265,7 @@ tbody > tr > td {
   justify-content: center;
   gap: 10px;
 }
+
 .text-style-ele {
   padding: 10px;
   font-size: 20px;
@@ -269,4 +279,27 @@ tbody > tr > td {
 
 .text-style-ele:active {
   transform: translateY(-3px);
+}
+
+.align-text-div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.align-item {
+  font-size: 20px;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+.align-item:active {
+  transform: translateY(-3px);
+}
+
+.align-item:hover {
+  background-color: rgba(239, 239, 239, 0.946);
 }

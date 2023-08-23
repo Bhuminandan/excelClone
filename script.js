@@ -6,9 +6,13 @@ const columns = 26;
 // Global varibles
 let prevCellId;
 let currCell;
-let copiedText;
+let copiedData;
+let lastPressedBtn;
 
 // Getting DOM elements
+const alignLeft = document.querySelector(".align-left");
+const alignMiddle = document.querySelector(".align-middle");
+const alignRight = document.querySelector(".align-right");
 const table = document.querySelector("#table");
 const thead = document.querySelector("#thead");
 const theadRow = document.querySelector("#head-tr");
@@ -24,6 +28,7 @@ const pasteBtn = document.querySelector(".paste-icon-div");
 const fontSelection = document.getElementById('select');
 const fontSizeSelection = document.getElementById('select-font-size');
 const fontColorSelection = document.getElementById('hexcolorInput');
+const fontColorSelectionForBg = document.getElementById('hexcolorInputBg');
 
 
 // Colgeneration to Avoid Repetation
@@ -134,33 +139,53 @@ function setCellColor(colId, rowId, color) {
 boldBtn.addEventListener("click", () => buttonClickHandler(currCell, "fontWeight", "bold", "normal"));
 italicBtn.addEventListener("click", () => buttonClickHandler(currCell, "fontStyle", "italic", "normal"));
 underlineBtn.addEventListener("click", () => buttonClickHandler(currCell, "textDecoration", "underline", "none"));
+alignLeft.addEventListener("click", () => buttonClickHandler(currCell, "textAlign", "left", "left"));
+alignMiddle.addEventListener("click", () => buttonClickHandler(currCell, "textAlign", "center", "center"));
+alignRight.addEventListener("click", () => buttonClickHandler(currCell, "textAlign", "right", "right"));
 fontSelection.addEventListener("change", (event) => buttonClickHandler(currCell, "fontFamily", event.target.value, "Arimo"));
 fontSizeSelection.addEventListener("change", (event) => buttonClickHandler(currCell, "fontSize", `${event.target.value}px`, "14"));
 fontColorSelection.addEventListener("change", (event) => buttonClickHandler(currCell, "color", event.target.value, "#000"));
+fontColorSelectionForBg.addEventListener("change", (event) => buttonClickHandler(currCell, "backgroundColor", event.target.value, "transperent"));
 
 
 // Copy Pasting button workings 
 
-// Copy Btn
-copyBtn.addEventListener("click", () => {
-    copiedText = currCell.innerText;
-    renderExistingStyles(currCell);
-})
-
 // cut Btn
 cutBtn.addEventListener("click", () => {
-    copiedText = currCell.innerText;
+    lastPressedBtn = 'cut';
+    copiedData = {
+        text: currCell.innerText,
+        style: currCell.style.cssText,
+    }
     currCell.innerText = '';
-    renderExistingStyles(currCell);
+    currCell.style.cssText = '';
+    // renderExistingStyles(currCell);
+})
+
+
+// Copy Btn
+copyBtn.addEventListener("click", () => {
+    lastPressedBtn = 'copy';
+    copiedData = {
+        text: currCell.innerText,
+        style: currCell.style.cssText,
+    }
+    // renderExistingStyles(currCell);
 })
 
 // Paste Btn
 pasteBtn.addEventListener("click", () => {
-    if (copiedText) {
-        currCell.innerText = copiedText;
+    currCell.innerText = copiedData.text;
+    currCell.style = copiedData.style;
+
+
+    if (lastPressedBtn === 'cut') {
+        copiedData = {};
     }
-    renderExistingStyles(currCell);
+
+    // renderExistingStyles(currCell);
 })
+
 
 
 // format Btn
