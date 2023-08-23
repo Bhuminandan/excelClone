@@ -25,7 +25,26 @@ const fontSelection = document.getElementById('select');
 const fontSizeSelection = document.getElementById('select-font-size');
 const fontColorSelection = document.getElementById('hexcolorInput');
 
+
 // Colgeneration to Avoid Repetation
+
+
+// Text Styling Handler Funcion 
+// Util function for handling click events
+function buttonClickHandler(currCell, styleProperty, styleToAdd, styleRemoverWord) {
+    if (currCell === undefined) return;
+    if (currCell.style[styleProperty] === styleToAdd) {
+        currCell.style[styleProperty] = styleRemoverWord;
+        renderExistingStyles(currCell);
+    } else {
+        currCell.style[styleProperty] = styleToAdd;
+        renderExistingStyles(currCell);
+    }
+}
+
+
+
+
 // Util function for cols
 function colGen(typeofCell, tableRow, isInnerText, rowNumber) {
     for (let col = 0; col < columns; col++) {
@@ -40,42 +59,6 @@ function colGen(typeofCell, tableRow, isInnerText, rowNumber) {
         }
         tableRow.append(cell);
     }
-}
-colGen("th", theadRow, true);
-
-function onFucusFunction(cell) {
-    currCell = cell;
-    renderExistingStyles(currCell);
-    // console.log(currCell)
-    const currentCellId = cell.id;
-    emptyCell.innerHTML = currentCellId;
-
-    if (prevCellId) {
-        setCellColor(prevCellId[0], prevCellId.substring(1), 'transparent');
-    }
-
-    setCellColor(cell.id[0], cell.id.substring(1), '#EFFBFB');
-    prevCellId = cell.id;
-}
-
-function setCellColor(colId, rowId, color) {
-    const colHead = document.getElementById(colId);
-    const rowHead = document.getElementById(rowId);
-    colHead.style.backgroundColor = color;
-    rowHead.style.backgroundColor = color;
-}
-
-for (let row = 1; row <= rows; row++) {
-    const tr = document.createElement("tr");
-    const th = document.createElement("th");
-    th.setAttribute("id", row);
-    th.innerText = row;
-    tr.appendChild(th);
-
-    // Generating cols
-    colGen("td", tr, false, row);
-
-    tbody.appendChild(tr);
 }
 
 
@@ -103,7 +86,60 @@ function renderExistingStyles(currCell) {
 }
 
 
-// Styling 
+
+// Generating table here
+colGen("th", theadRow, true);
+for (let row = 1; row <= rows; row++) {
+    const tr = document.createElement("tr");
+    const th = document.createElement("th");
+    th.setAttribute("id", row);
+    th.innerText = row;
+    tr.appendChild(th);
+
+    // Generating cols
+    colGen("td", tr, false, row);
+
+    tbody.appendChild(tr);
+}
+
+
+
+
+// On Focus Function
+function onFucusFunction(cell) {
+    currCell = cell;
+    renderExistingStyles(currCell);
+    // console.log(currCell)
+    const currentCellId = cell.id;
+    emptyCell.innerHTML = currentCellId;
+
+    if (prevCellId) {
+        setCellColor(prevCellId[0], prevCellId.substring(1), 'transparent');
+    }
+
+    setCellColor(cell.id[0], cell.id.substring(1), '#EFFBFB');
+    prevCellId = cell.id;
+}
+
+
+// Function to make the highLight the bachground color of the focused cell row and col head
+function setCellColor(colId, rowId, color) {
+    const colHead = document.getElementById(colId);
+    const rowHead = document.getElementById(rowId);
+    colHead.style.backgroundColor = color;
+    rowHead.style.backgroundColor = color;
+}
+
+// Adding functionalities to buttons with click listener
+boldBtn.addEventListener("click", () => buttonClickHandler(currCell, "fontWeight", "bold", "normal"));
+italicBtn.addEventListener("click", () => buttonClickHandler(currCell, "fontStyle", "italic", "normal"));
+underlineBtn.addEventListener("click", () => buttonClickHandler(currCell, "textDecoration", "underline", "none"));
+fontSelection.addEventListener("change", (event) => buttonClickHandler(currCell, "fontFamily", event.target.value, "Arimo"));
+fontSizeSelection.addEventListener("change", (event) => buttonClickHandler(currCell, "fontSize", `${event.target.value}px`, "14"));
+fontColorSelection.addEventListener("change", (event) => buttonClickHandler(currCell, "color", event.target.value, "#000"));
+
+
+// Copy Pasting button workings 
 
 // Copy Btn
 copyBtn.addEventListener("click", () => {
@@ -127,27 +163,14 @@ pasteBtn.addEventListener("click", () => {
 })
 
 
-// Text Styling
-
-
-function buttonClickHandler(currCell, styleProperty, styleToAdd, styleRemoverWord) {
-    if (currCell === undefined) return;
-    if (currCell.style[styleProperty] === styleToAdd) {
-        currCell.style[styleProperty] = styleRemoverWord;
-        renderExistingStyles(currCell);
-    } else {
-        currCell.style[styleProperty] = styleToAdd;
-        renderExistingStyles(currCell);
-    }
-}
-
-
-boldBtn.addEventListener("click", () => buttonClickHandler(currCell, "fontWeight", "bold", "normal"));
-italicBtn.addEventListener("click", () => buttonClickHandler(currCell, "fontStyle", "italic", "normal"));
-underlineBtn.addEventListener("click", () => buttonClickHandler(currCell, "textDecoration", "underline", "none"));
-fontSelection.addEventListener("change", (event) => buttonClickHandler(currCell, "fontFamily", event.target.value, "Arimo"));
-fontSizeSelection.addEventListener("change", (event) => buttonClickHandler(currCell, "fontSize", `${event.target.value}px`, "14"));
-fontColorSelection.addEventListener("change", (event) => buttonClickHandler(currCell, "color", event.target.value, "#000"));
-
-
-
+// format Btn
+formatBtn.addEventListener("click", () => {
+    boldBtn.style.backgroundColor = "#f7f7f7";
+    italicBtn.style.backgroundColor = "#f7f7f7";
+    underlineBtn.style.backgroundColor = "#f7f7f7";
+    currCell.style.fontWeight = "normal";
+    currCell.style.fontStyle = "normal";
+    currCell.style.textDecoration = "none";
+    currCell.style.color = '#000';
+    currCell.style.fontSize = '16px';
+})
