@@ -131,7 +131,6 @@ pasteBtn.addEventListener("click", () => {
 
 
 function buttonClickHandler(currCell, styleProperty, styleToAdd, styleRemoverWord) {
-    console.log(styleToAdd)
     if (currCell === undefined) return;
     if (currCell.style[styleProperty] === styleToAdd) {
         currCell.style[styleProperty] = styleRemoverWord;
@@ -145,7 +144,6 @@ function buttonClickHandler(currCell, styleProperty, styleToAdd, styleRemoverWor
 
 boldBtn.addEventListener("click", () => buttonClickHandler(currCell, "fontWeight", "bold", "normal"));
 italicBtn.addEventListener("click", () => buttonClickHandler(currCell, "fontStyle", "italic", "normal"));
-underlineBtn.addEventListener("click", () => buttonClickHandler(currCell, "textDecoration", "underline", "none"));
 underlineBtn.addEventListener("click", () => buttonClickHandler(currCell, "textDecoration", "underline", "none"));
 fontSelection.addEventListener("change", (event) => buttonClickHandler(currCell, "fontFamily", event.target.value, "Arimo"));
 fontSizeSelection.addEventListener("change", (event) => buttonClickHandler(currCell, "fontSize", `${event.target.value}px`, "14"));
