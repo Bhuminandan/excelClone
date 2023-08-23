@@ -21,7 +21,9 @@ const cutBtn = document.querySelector(".cut");
 const copyBtn = document.querySelector(".copy");
 const formatBtn = document.querySelector(".format");
 const pasteBtn = document.querySelector(".paste-icon-div");
-const select = document.getElementById('select');
+const fontSelection = document.getElementById('select');
+const fontSizeSelection = document.getElementById('select-font-size');
+const fontColorSelection = document.getElementById('hexcolorInput');
 
 // Colgeneration to Avoid Repetation
 // Util function for cols
@@ -125,44 +127,29 @@ pasteBtn.addEventListener("click", () => {
 })
 
 
-// Text Bold
+// Text Styling
 
-boldBtn.addEventListener("click", () => {
-    if (currCell.style.fontWeight === 'bold') {
-        currCell.style.fontWeight = 'normal';
+
+function buttonClickHandler(currCell, styleProperty, styleToAdd, styleRemoverWord) {
+    console.log(styleToAdd)
+    if (currCell === undefined) return;
+    if (currCell.style[styleProperty] === styleToAdd) {
+        currCell.style[styleProperty] = styleRemoverWord;
         renderExistingStyles(currCell);
     } else {
-        currCell.style.fontWeight = 'bold';
+        currCell.style[styleProperty] = styleToAdd;
         renderExistingStyles(currCell);
     }
-})
-
-italicBtn.addEventListener("click", () => {
-    if (currCell.style.fontStyle === "italic") {
-        currCell.style.fontStyle = "normal";
-        renderExistingStyles(currCell);
-    } else {
-        currCell.style.fontStyle = "italic";
-        renderExistingStyles(currCell);
-    }
-})
-
-underlineBtn.addEventListener("click", () => {
-    if (currCell.style.textDecoration === "underline") {
-        currCell.style.textDecoration = "none";
-        renderExistingStyles(currCell);
-    } else {
-        currCell.style.textDecoration = "underline";
-        renderExistingStyles(currCell);
-    }
-})
+}
 
 
-select.addEventListener('change', function handleChange(event) {
-    // console.log(event.target.value);
-    let fontName = event.target.value;
-    if (currCell) {
-        currCell.style.fontFamily = fontName;
-    }
-});
+boldBtn.addEventListener("click", () => buttonClickHandler(currCell, "fontWeight", "bold", "normal"));
+italicBtn.addEventListener("click", () => buttonClickHandler(currCell, "fontStyle", "italic", "normal"));
+underlineBtn.addEventListener("click", () => buttonClickHandler(currCell, "textDecoration", "underline", "none"));
+underlineBtn.addEventListener("click", () => buttonClickHandler(currCell, "textDecoration", "underline", "none"));
+fontSelection.addEventListener("change", (event) => buttonClickHandler(currCell, "fontFamily", event.target.value, "Arimo"));
+fontSizeSelection.addEventListener("change", (event) => buttonClickHandler(currCell, "fontSize", `${event.target.value}px`, "14"));
+fontColorSelection.addEventListener("change", (event) => buttonClickHandler(currCell, "color", event.target.value, "#000"));
+
+
 
