@@ -159,7 +159,6 @@ cutBtn.addEventListener("click", () => {
     }
     currCell.innerText = '';
     currCell.style.cssText = '';
-    // renderExistingStyles(currCell);
 })
 
 
@@ -170,20 +169,21 @@ copyBtn.addEventListener("click", () => {
         text: currCell.innerText,
         style: currCell.style.cssText,
     }
-    // renderExistingStyles(currCell);
 })
 
 // Paste Btn
 pasteBtn.addEventListener("click", () => {
+
+    if (copiedData === undefined) {
+        return;
+    }
+
     currCell.innerText = copiedData.text;
     currCell.style = copiedData.style;
 
-
     if (lastPressedBtn === 'cut') {
-        copiedData = {};
-    }
-
-    // renderExistingStyles(currCell);
+        copiedData = undefined;
+    };
 })
 
 
