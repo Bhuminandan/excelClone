@@ -69,7 +69,7 @@ function colGen(typeofCell, tableRow, isInnerText, rowNumber) {
 
 
 function colGenForUploadedFile(typeofCell, tableRow, rowNumber, matrixArr) {
-    console.log(matrixArr);
+    // console.log(matrixArr);
     for (let col = 0; col < columns; col++) {
         const cell = document.createElement(typeofCell);
         cell.setAttribute("id", `${String.fromCharCode(col + 65)}${rowNumber}`);
@@ -271,6 +271,7 @@ function updateObjInMatrix() {
 
 function handleDownload() {
     console.log("Downloading Started");
+    updateObjInMatrix();
     const matrixString = JSON.stringify(matrix);
     //Creating memory with this matrixString
 
@@ -296,7 +297,6 @@ function updateUploadedData(matrix) {
 
 function handleUpload(event) {
     // console.log(event.target.files[0]);
-
     const uploadedFile = event.target.files[0]
 
     if (uploadedFile) {
@@ -308,10 +308,11 @@ function handleUpload(event) {
         // Overriding the onload function
         reader.onload = function (event) {
             const fileContent = JSON.parse(event.target.result);
-            console.log(fileContent);
+            // console.log(fileContent);
             updateUploadedData(fileContent);
         }
     }
+    updateObjInMatrix();
 }
 
 
