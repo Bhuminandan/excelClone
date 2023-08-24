@@ -47,28 +47,9 @@ for (let row = 0; row < rows; row++) {
     }
 }
 
-// console.log(matrix);
+
 
 // Colgeneration to Avoid Repetation
-
-
-// Text Styling Handler Funcion 
-// Util function for handling click events
-function buttonClickHandler(currCell, styleProperty, styleToAdd, styleRemoverWord) {
-    if (currCell === undefined) return;
-    if (currCell.style[styleProperty] === styleToAdd) {
-        currCell.style[styleProperty] = styleRemoverWord;
-        renderExistingStyles(currCell);
-    } else {
-        currCell.style[styleProperty] = styleToAdd;
-        renderExistingStyles(currCell);
-    }
-    updateObjInMatrix();
-}
-
-
-
-
 // Util function for cols
 function colGen(typeofCell, tableRow, isInnerText, rowNumber) {
     for (let col = 0; col < columns; col++) {
@@ -87,9 +68,81 @@ function colGen(typeofCell, tableRow, isInnerText, rowNumber) {
 }
 
 
+function colGenForUploadedFile(typeofCell, tableRow, rowNumber, matrixArr) {
+    console.log(matrixArr);
+    for (let col = 0; col < columns; col++) {
+        const cell = document.createElement(typeofCell);
+        cell.setAttribute("id", `${String.fromCharCode(col + 65)}${rowNumber}`);
+        if (matrixArr[col].text) {
+            cell.innerText = matrixArr[col].text;
+        }
+        if (matrixArr[col].style) {
+            cell.style.cssText = matrixArr[col].style;
+        }
+        cell.setAttribute("contenteditable", true);
+        cell.addEventListener("focusout", updateObjInMatrix);
+        cell.addEventListener("focus", event => onFucusFunction(event.target));
+        tableRow.append(cell);
+    }
+}
+
+// colGenForUploadedFile("td", tr, row, matrix[row]);
+
+// colGenForUploadedFile("td", tr, false, row);
+
+
+// Generating table here
+colGen("th", theadRow, true);
+
+function createTable(isUploaded, matrix) {
+    if (!isUploaded) {
+        for (let row = 1; row <= rows; row++) {
+            const tr = document.createElement("tr");
+            const th = document.createElement("th");
+            th.setAttribute("id", row);
+            th.innerText = row;
+            tr.appendChild(th);
+
+            // Generating cols for first time repload
+            colGen("td", tr, false, row);
+
+            tbody.appendChild(tr);
+        }
+    } else {
+        let row2 = 0;
+        for (let row = 1; row <= rows; row++) {
+            const tr = document.createElement("tr");
+            const th = document.createElement("th");
+            th.setAttribute("id", row);
+            th.innerText = row;
+            tr.appendChild(th);
+
+            // Generating cols for first time repload
+            colGenForUploadedFile("td", tr, row, matrix[row2]);
+            row2++;
+            tbody.appendChild(tr);
+        }
+    }
+}
+
+createTable(false);
+
+
+// Text Styling Handler Funcion 
+// Util function for handling click events
+function buttonClickHandler(currCell, styleProperty, styleToAdd, styleRemoverWord) {
+    if (currCell === undefined) return;
+    if (currCell.style[styleProperty] === styleToAdd) {
+        currCell.style[styleProperty] = styleRemoverWord;
+        renderExistingStyles(currCell);
+    } else {
+        currCell.style[styleProperty] = styleToAdd;
+        renderExistingStyles(currCell);
+    }
+    updateObjInMatrix();
+}
+
 // Text Styling Functionality
-
-
 function renderExistingStyles(currCell) {
     if (currCell.style.fontWeight === 'bold') {
         boldBtn.style.backgroundColor = "rgba(214, 214, 214, 0.946)";
@@ -110,24 +163,6 @@ function renderExistingStyles(currCell) {
     }
     updateObjInMatrix();
 }
-
-
-
-// Generating table here
-colGen("th", theadRow, true);
-for (let row = 1; row <= rows; row++) {
-    const tr = document.createElement("tr");
-    const th = document.createElement("th");
-    th.setAttribute("id", row);
-    th.innerText = row;
-    tr.appendChild(th);
-
-    // Generating cols
-    colGen("td", tr, false, row);
-
-    tbody.appendChild(tr);
-}
-
 
 
 
@@ -251,6 +286,14 @@ function handleDownload() {
 }
 
 
+// function to update the uploaded data to the UI
+function updateUploadedData(matrix) {
+    tbody.innerHTML = '';
+    colGen("th", theadRow, true);
+    createTable(true, matrix);
+}
+
+
 function handleUpload(event) {
     // console.log(event.target.files[0]);
 
@@ -258,14 +301,16 @@ function handleUpload(event) {
 
     if (uploadedFile) {
         const reader = new FileReader();
+
         // reader is inbuilt instance of FileReader class
+        reader.readAsText(uploadedFile);
 
         // Overriding the onload function
         reader.onload = function (event) {
             const fileContent = JSON.parse(event.target.result);
-            // console.log(fileContent);
+            console.log(fileContent);
+            updateUploadedData(fileContent);
         }
-        reader.readAsText(uploadedFile);
     }
 }
 
