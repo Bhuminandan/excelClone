@@ -3,12 +3,6 @@ const rows = 100;
 const columns = 26;
 
 
-// Global varibles
-let prevCellId;
-let currCell;
-let copiedData;
-let lastPressedBtn;
-
 // Getting DOM elements
 const alignLeft = document.querySelector(".align-left");
 const alignMiddle = document.querySelector(".align-middle");
@@ -31,6 +25,28 @@ const fontColorSelection = document.getElementById('hexcolorInput');
 const fontColorSelectionForBg = document.getElementById('hexcolorInputBg');
 
 
+// Global varibles
+let prevCellId;
+let currCell;
+let copiedData;
+let lastPressedBtn;
+
+
+
+// Creating empty 2D Array of objescts to store the cell data to use in Download button
+
+let matrix = new Array(rows);
+
+for (let row = 0; row < rows; row++) {
+    matrix[row] = new Array(columns);
+
+    for (let col = 0; col < columns; col++) {
+        matrix[row][col] = {};
+    }
+}
+
+// console.log(matrix);
+
 // Colgeneration to Avoid Repetation
 
 
@@ -45,6 +61,7 @@ function buttonClickHandler(currCell, styleProperty, styleToAdd, styleRemoverWor
         currCell.style[styleProperty] = styleToAdd;
         renderExistingStyles(currCell);
     }
+    updateObjInMatrix();
 }
 
 
@@ -59,6 +76,7 @@ function colGen(typeofCell, tableRow, isInnerText, rowNumber) {
             cell.setAttribute("id", `${String.fromCharCode(col + 65)}`);
         } else {
             cell.setAttribute("contenteditable", true);
+            cell.addEventListener("focusout", updateObjInMatrix);
             cell.setAttribute("id", `${String.fromCharCode(col + 65)}${rowNumber}`)
             cell.addEventListener("focus", event => onFucusFunction(event.target));
         }
@@ -88,6 +106,7 @@ function renderExistingStyles(currCell) {
     } else {
         underlineBtn.style.backgroundColor = "#F7F7F7";
     }
+    updateObjInMatrix();
 }
 
 
@@ -119,33 +138,23 @@ function onFucusFunction(cell) {
     emptyCell.innerHTML = currentCellId;
 
     if (prevCellId) {
-        setCellColor(prevCellId[0], prevCellId.substring(1), 'transparent');
+        setCellHeadColor(prevCellId[0], prevCellId.substring(1), 'transparent');
     }
 
-    setCellColor(cell.id[0], cell.id.substring(1), '#EFFBFB');
+    setCellHeadColor(cell.id[0], cell.id.substring(1), '#EFFBFB');
     prevCellId = cell.id;
+
 }
 
 
 // Function to make the highLight the bachground color of the focused cell row and col head
-function setCellColor(colId, rowId, color) {
+function setCellHeadColor(colId, rowId, color) {
     const colHead = document.getElementById(colId);
     const rowHead = document.getElementById(rowId);
     colHead.style.backgroundColor = color;
     rowHead.style.backgroundColor = color;
+    updateObjInMatrix();
 }
-
-// Adding functionalities to buttons with click listener
-boldBtn.addEventListener("click", () => buttonClickHandler(currCell, "fontWeight", "bold", "normal"));
-italicBtn.addEventListener("click", () => buttonClickHandler(currCell, "fontStyle", "italic", "normal"));
-underlineBtn.addEventListener("click", () => buttonClickHandler(currCell, "textDecoration", "underline", "none"));
-alignLeft.addEventListener("click", () => buttonClickHandler(currCell, "textAlign", "left", "left"));
-alignMiddle.addEventListener("click", () => buttonClickHandler(currCell, "textAlign", "center", "center"));
-alignRight.addEventListener("click", () => buttonClickHandler(currCell, "textAlign", "right", "right"));
-fontSelection.addEventListener("change", (event) => buttonClickHandler(currCell, "fontFamily", event.target.value, "Arimo"));
-fontSizeSelection.addEventListener("change", (event) => buttonClickHandler(currCell, "fontSize", `${event.target.value}px`, "14"));
-fontColorSelection.addEventListener("change", (event) => buttonClickHandler(currCell, "color", event.target.value, "#000"));
-fontColorSelectionForBg.addEventListener("change", (event) => buttonClickHandler(currCell, "backgroundColor", event.target.value, "transperent"));
 
 
 // Copy Pasting button workings 
@@ -159,6 +168,7 @@ cutBtn.addEventListener("click", () => {
     }
     currCell.innerText = '';
     currCell.style.cssText = '';
+    updateObjInMatrix();
 })
 
 
@@ -184,6 +194,7 @@ pasteBtn.addEventListener("click", () => {
     if (lastPressedBtn === 'cut') {
         copiedData = undefined;
     };
+    updateObjInMatrix();
 })
 
 
@@ -198,4 +209,43 @@ formatBtn.addEventListener("click", () => {
     currCell.style.textDecoration = "none";
     currCell.style.color = '#000';
     currCell.style.fontSize = '16px';
+    updateObjInMatrix();
 })
+
+
+
+// Update Cell in matrix function
+
+function updateObjInMatrix() {
+    let id = currCell.id;
+    let tempObj = {
+        id: id,
+        text: currCell.innerText,
+        style: currCell.style.cssText,
+    }
+
+    console.log(tempObj);
+
+    let col = id[0].charCodeAt(0) - 65;
+    let row = id.substring(1) - 1;
+
+    // console.log(col)
+    // console.log(row)
+
+    matrix[row][col] = tempObj;
+    // console.log(matrix);
+}
+
+
+
+// Adding functionalities to buttons with click listener
+boldBtn.addEventListener("click", () => buttonClickHandler(currCell, "fontWeight", "bold", "normal"));
+italicBtn.addEventListener("click", () => buttonClickHandler(currCell, "fontStyle", "italic", "normal"));
+underlineBtn.addEventListener("click", () => buttonClickHandler(currCell, "textDecoration", "underline", "none"));
+alignLeft.addEventListener("click", () => buttonClickHandler(currCell, "textAlign", "left", "left"));
+alignMiddle.addEventListener("click", () => buttonClickHandler(currCell, "textAlign", "center", "center"));
+alignRight.addEventListener("click", () => buttonClickHandler(currCell, "textAlign", "right", "right"));
+fontSelection.addEventListener("change", (event) => buttonClickHandler(currCell, "fontFamily", event.target.value, "Arimo"));
+fontSizeSelection.addEventListener("change", (event) => buttonClickHandler(currCell, "fontSize", `${event.target.value}px`, "14"));
+fontColorSelection.addEventListener("change", (event) => buttonClickHandler(currCell, "color", event.target.value, "#000"));
+fontColorSelectionForBg.addEventListener("change", (event) => buttonClickHandler(currCell, "backgroundColor", event.target.value, "transperent"));
