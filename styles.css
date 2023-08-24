@@ -303,3 +303,16 @@ tbody > tr > td {
 .align-item:hover {
   background-color: rgba(239, 239, 239, 0.946);
 }
+
+.upload-btn {
+  display: flex;
+  flex-direction: row-reverse;
+}
+
+.upload-btn i {
+  cursor: pointer;
+}
+
+input[type="file"] {
+  display: none;
+}

@@ -23,6 +23,8 @@ const fontSelection = document.getElementById('select');
 const fontSizeSelection = document.getElementById('select-font-size');
 const fontColorSelection = document.getElementById('hexcolorInput');
 const fontColorSelectionForBg = document.getElementById('hexcolorInputBg');
+const downloadBtn = document.querySelector('.download-btn');
+const uploadBtn = document.querySelector('.upload-btn input');
 
 
 // Global varibles
@@ -224,21 +226,54 @@ function updateObjInMatrix() {
         style: currCell.style.cssText,
     }
 
-    console.log(tempObj);
-
     let col = id[0].charCodeAt(0) - 65;
     let row = id.substring(1) - 1;
 
-    // console.log(col)
-    // console.log(row)
 
     matrix[row][col] = tempObj;
-    // console.log(matrix);
+}
+
+
+function handleDownload() {
+    console.log("Downloading Started");
+    const matrixString = JSON.stringify(matrix);
+    //Creating memory with this matrixString
+
+    const blob = new Blob([matrixString], { type: "application/json" });
+
+    const link = document.createElement("a");
+    //converting blob to downloadable / Url
+    link.href = URL.createObjectURL(blob);
+    link.download = "table.json";
+    // so far we have done Matrix -> Stringihy -> blob -> link (URL)
+
+    link.click();
+}
+
+
+function handleUpload(event) {
+    // console.log(event.target.files[0]);
+
+    const uploadedFile = event.target.files[0]
+
+    if (uploadedFile) {
+        const reader = new FileReader();
+        // reader is inbuilt instance of FileReader class
+
+        // Overriding the onload function
+        reader.onload = function (event) {
+            const fileContent = JSON.parse(event.target.result);
+            // console.log(fileContent);
+        }
+        reader.readAsText(uploadedFile);
+    }
 }
 
 
 
 // Adding functionalities to buttons with click listener
+downloadBtn.addEventListener("click", handleDownload);
+uploadBtn.addEventListener("input", handleUpload);
 boldBtn.addEventListener("click", () => buttonClickHandler(currCell, "fontWeight", "bold", "normal"));
 italicBtn.addEventListener("click", () => buttonClickHandler(currCell, "fontStyle", "italic", "normal"));
 underlineBtn.addEventListener("click", () => buttonClickHandler(currCell, "textDecoration", "underline", "none"));
