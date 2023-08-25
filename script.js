@@ -38,20 +38,19 @@ let lastPressedBtn;
 let arrayOfMatrices;
 let numOfSheets = 1;
 let currSheet = 1;
+let prevSheet;
+let matricesArr = "mitricesArr";
 
 // Creating empty 2D Array of objescts to store the cell data to use in Download button
-let matrix;
-let newTempMatrix;
+let matrix = new Array(rows);
+
 function createMatrix() {
-    let newMatrix = new Array(rows);
     for (let row = 0; row < rows; row++) {
-        newMatrix[row] = new Array(columns);
+        matrix[row] = new Array(columns);
         for (let col = 0; col < columns; col++) {
-            newMatrix[row][col] = {};
+            matrix[row][col] = {};
         }
     }
-    // console.log(newMatrix);
-    matrix = newMatrix;
 }
 
 createMatrix();
@@ -70,7 +69,7 @@ function colGen(typeofCell, tableRow, isInnerText, rowNumber) {
             cell.setAttribute("id", `${String.fromCharCode(col + 65)}`);
         } else {
             cell.setAttribute("contenteditable", true);
-            cell.addEventListener("focus", updateObjInMatrix);
+            cell.addEventListener("focusout", updateObjInMatrix);
             cell.setAttribute("id", `${String.fromCharCode(col + 65)}${rowNumber}`)
             cell.addEventListener("focus", event => onFucusFunction(event.target));
         }
@@ -97,15 +96,13 @@ function colGenForUploadedFile(typeofCell, tableRow, rowNumber, matrixArr) {
     }
 }
 
-// colGenForUploadedFile("td", tr, row, matrix[row]);
-
-// colGenForUploadedFile("td", tr, false, row);
 
 
 // Generating table here
 colGen("th", theadRow, true);
 
 function createNewTable(isUploaded, matrix) {
+    tbody.innerHTML = '';
     if (!isUploaded) {
         for (let row = 1; row <= rows; row++) {
             const tr = document.createElement("tr");
@@ -331,6 +328,7 @@ function handleUpload(event) {
 function addSheetBtnNow() {
     const btn = document.createElement("button");
     numOfSheets++;
+    prevSheet = currSheet;
     currSheet = numOfSheets;
     btn.classList.add("btn");
     btn.classList.add("sheet-btns");
@@ -343,27 +341,36 @@ function addSheetBtnNow() {
 
 // ViewSheet Function to Switch betweeen sheets
 function viewSheet(event) {
-    let clickedSheet = event.target.id.slice(1);
-    let matrixArr = JSON.parse(sessionStorage.getItem("mitricesArr"));
-    console.log(matrixArr);
-    console.log(matrixArr[clickedSheet - 1]);
-    console.log(clickedSheet - 1);
-    let matrix = matrixArr[clickedSheet - 1];
-    tbody.innerHTML = '';
+    prevSheet = currSheet;
+    currSheet = event.target.id.slice(1);
+    let matrixArr = JSON.parse(sessionStorage.getItem(matricesArr));
+    // console.log(matrixArr);
+    // console.log(matrixArr[currSheet - 1]);
+    // console.log(currSheet - 1);
+
+
+    // Updating the currSheet in the local storage before switching
+    matrixArr[prevSheet - 1] = matrix;
+    console.log(matrixArr[prevSheet - 1]);
+    sessionStorage.setItem(matricesArr, JSON.stringify(matrixArr));
+
+    // Creating new Matix
+    matrix = matrixArr[currSheet - 1];
     createNewTable(true, matrix);
+    sheetHeading.innerText = `Sheet ${currSheet}`;
 }
 
 
 // Saving my mitrics in arr in sessionStorage
 function saveMatrices() {
-    if (sessionStorage.getItem("mitricesArr")) {
-        let tempMatrixArr = JSON.parse(sessionStorage.getItem("mitricesArr"));
+    if (sessionStorage.getItem(matricesArr)) {
+        let tempMatrixArr = JSON.parse(sessionStorage.getItem(matricesArr));
         let newMatrix = matrix;
         tempMatrixArr.push(newMatrix);
-        sessionStorage.setItem("mitricesArr", JSON.stringify(tempMatrixArr));
+        sessionStorage.setItem(matricesArr, JSON.stringify(tempMatrixArr));
     } else {
         let tempArrMatrix = [matrix];
-        sessionStorage.setItem("mitricesArr", JSON.stringify(tempArrMatrix));
+        sessionStorage.setItem(matricesArr, JSON.stringify(tempArrMatrix));
     }
 }
 
@@ -384,8 +391,7 @@ function handleAddSheet() {
     createMatrix();
     createNewTable(false);
     console.log("Reached Save Matrices");
-    // console.log(matrix);
-    saveMatrices();
+    // saveMatrices();
 }
 
 
