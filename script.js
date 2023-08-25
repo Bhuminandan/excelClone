@@ -27,6 +27,7 @@ const downloadBtn = document.querySelector('.download-btn');
 const uploadBtn = document.querySelector('.upload-btn input');
 const addSheetBtn = document.getElementById("add-sheet-btn");
 const saveSheetBtn = document.getElementById("save-sheet-btn");
+const deleteSheetBtn = document.getElementById("delete-sheet-btn");
 const sheetHeading = document.querySelector(".sheet-heading");
 const buttonContainer = document.querySelector(".button-container");
 
@@ -45,15 +46,7 @@ let matricesArr = "mitricesArr";
 let matrix = new Array(rows);
 createMatrix();
 
-// button creation of firstRender
-if (localStorage.getItem(matricesArr)) {
-    for (let i = 1; i < JSON.parse(localStorage.getItem(matricesArr)).length; i++) {
-        addSheetBtnNow(true);
-    }
-}
-
-
-
+// Adding 100 rows to each of 100 arrays
 function createMatrix() {
     for (let row = 0; row < rows; row++) {
         matrix[row] = new Array(columns);
@@ -64,8 +57,9 @@ function createMatrix() {
 }
 
 
+
+// Function to render existing styles
 function renderMatrix() {
-    console.log(matrix)
     matrix.forEach(row => {
         row.forEach(cellObj => {
             if (cellObj.id) {
@@ -77,6 +71,16 @@ function renderMatrix() {
             }
         })
     })
+}
+
+
+
+
+// button creation of firstRender if anything already exists in local storage
+if (localStorage.getItem(matricesArr)) {
+    for (let i = 1; i < JSON.parse(localStorage.getItem(matricesArr)).length; i++) {
+        addSheetBtnNow(true);
+    }
 }
 
 
@@ -304,8 +308,6 @@ function updateObjInMatrix() {
 
 
 function handleDownload() {
-    console.log("Downloading Started");
-    updateObjInMatrix();
     const matrixString = JSON.stringify(matrix);
     //Creating memory with this matrixString
 
@@ -342,11 +344,10 @@ function handleUpload(event) {
         // Overriding the onload function
         reader.onload = function (event) {
             const fileContent = JSON.parse(event.target.result);
-            console.log(fileContent);
+            // console.log(fileContent);
             updateUploadedData(fileContent);
         }
     }
-    updateObjInMatrix();
 }
 
 
@@ -372,14 +373,9 @@ function viewSheet(event) {
     prevSheet = currSheet;
     currSheet = event.target.id.slice(1);
     let matrixArr = JSON.parse(localStorage.getItem(matricesArr));
-    // console.log(matrixArr);
-    // console.log(matrixArr[currSheet - 1]);
-    // console.log(currSheet - 1);
-
 
     // Updating the currSheet in the local storage before switching
     matrixArr[prevSheet - 1] = matrix;
-    // console.log(matrixArr[prevSheet - 1]);
     localStorage.setItem(matricesArr, JSON.stringify(matrixArr));
 
     // Creating new Matix
@@ -418,8 +414,6 @@ function handleAddSheet() {
     // Using create table function for both cleanUP and Creating new table
     createMatrix();
     createNewTable(false);
-    console.log("Reached Save Matrices");
-    // saveMatrices();
 }
 
 
@@ -430,6 +424,22 @@ function handleSaveSheet() {
 }
 
 
+function handleDeleteSheet() {
+    console.log(numOfSheets);
+    if (numOfSheets <= 1) {
+        alert("You can't delete all the sheets!");
+        return;
+    }
+
+    if (localStorage.getItem(matricesArr)) {
+        let matrixArr = JSON.parse(localStorage.getItem(matricesArr));
+        matrixArr.splice(currSheet - 1, 1);
+        localStorage.setItem(matricesArr, JSON.stringify(matrixArr));
+    }
+    numOfSheets--;
+    location.reload();
+    alert(`Sheet Number ${currSheet} deleted!`);
+}
 
 
 // Adding functionalities to buttons with click listener
@@ -437,6 +447,7 @@ downloadBtn.addEventListener("click", handleDownload);
 uploadBtn.addEventListener("input", handleUpload);
 addSheetBtn.addEventListener("click", () => handleAddSheet());
 saveSheetBtn.addEventListener("click", () => handleSaveSheet());
+deleteSheetBtn.addEventListener("click", () => handleDeleteSheet());
 boldBtn.addEventListener("click", () => buttonClickHandler(currCell, "fontWeight", "bold", "normal"));
 italicBtn.addEventListener("click", () => buttonClickHandler(currCell, "fontStyle", "italic", "normal"));
 underlineBtn.addEventListener("click", () => buttonClickHandler(currCell, "textDecoration", "underline", "none"));
