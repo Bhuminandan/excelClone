@@ -316,3 +316,29 @@ tbody > tr > td {
 input[type="file"] {
   display: none;
 }
+
+.btn {
+  padding: 10px 15px;
+  background-color: #227447;
+  color: white;
+  border-radius: 3px;
+  border: none;
+  cursor: pointer;
+}
+
+.btn:active {
+  transform: translateY(-1px);
+}
+
+.button-container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.sheet-btns {
+  padding: 5px 10px;
+  border-radius: 30px;
+}

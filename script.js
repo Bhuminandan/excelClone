@@ -25,27 +25,38 @@ const fontColorSelection = document.getElementById('hexcolorInput');
 const fontColorSelectionForBg = document.getElementById('hexcolorInputBg');
 const downloadBtn = document.querySelector('.download-btn');
 const uploadBtn = document.querySelector('.upload-btn input');
-
+const addSheetBtn = document.getElementById("add-sheet-btn");
+const saveSheetBtn = document.getElementById("save-sheet-btn");
+const sheetHeading = document.querySelector(".sheet-heading");
+const buttonContainer = document.querySelector(".button-container");
 
 // Global varibles
 let prevCellId;
 let currCell;
 let copiedData;
 let lastPressedBtn;
-
-
+let arrayOfMatrices;
+let numOfSheets = 1;
+let currSheet = 1;
 
 // Creating empty 2D Array of objescts to store the cell data to use in Download button
-
-let matrix = new Array(rows);
-
-for (let row = 0; row < rows; row++) {
-    matrix[row] = new Array(columns);
-
-    for (let col = 0; col < columns; col++) {
-        matrix[row][col] = {};
+let matrix;
+let newTempMatrix;
+function createMatrix() {
+    let newMatrix = new Array(rows);
+    for (let row = 0; row < rows; row++) {
+        newMatrix[row] = new Array(columns);
+        for (let col = 0; col < columns; col++) {
+            newMatrix[row][col] = {};
+        }
     }
+    // console.log(newMatrix);
+    matrix = newMatrix;
 }
+
+createMatrix();
+
+
 
 
 
@@ -59,7 +70,7 @@ function colGen(typeofCell, tableRow, isInnerText, rowNumber) {
             cell.setAttribute("id", `${String.fromCharCode(col + 65)}`);
         } else {
             cell.setAttribute("contenteditable", true);
-            cell.addEventListener("focusout", updateObjInMatrix);
+            cell.addEventListener("focus", updateObjInMatrix);
             cell.setAttribute("id", `${String.fromCharCode(col + 65)}${rowNumber}`)
             cell.addEventListener("focus", event => onFucusFunction(event.target));
         }
@@ -94,7 +105,7 @@ function colGenForUploadedFile(typeofCell, tableRow, rowNumber, matrixArr) {
 // Generating table here
 colGen("th", theadRow, true);
 
-function createTable(isUploaded, matrix) {
+function createNewTable(isUploaded, matrix) {
     if (!isUploaded) {
         for (let row = 1; row <= rows; row++) {
             const tr = document.createElement("tr");
@@ -125,7 +136,7 @@ function createTable(isUploaded, matrix) {
     }
 }
 
-createTable(false);
+createNewTable(false);
 
 
 // Text Styling Handler Funcion 
@@ -252,9 +263,9 @@ formatBtn.addEventListener("click", () => {
 
 
 // Update Cell in matrix function
-
 function updateObjInMatrix() {
     let id = currCell.id;
+
     let tempObj = {
         id: id,
         text: currCell.innerText,
@@ -291,7 +302,7 @@ function handleDownload() {
 function updateUploadedData(matrix) {
     tbody.innerHTML = '';
     colGen("th", theadRow, true);
-    createTable(true, matrix);
+    createNewTable(true, matrix);
 }
 
 
@@ -308,7 +319,7 @@ function handleUpload(event) {
         // Overriding the onload function
         reader.onload = function (event) {
             const fileContent = JSON.parse(event.target.result);
-            // console.log(fileContent);
+            console.log(fileContent);
             updateUploadedData(fileContent);
         }
     }
@@ -316,10 +327,80 @@ function handleUpload(event) {
 }
 
 
+// Adding a new Btn to access the sheet
+function addSheetBtnNow() {
+    const btn = document.createElement("button");
+    numOfSheets++;
+    currSheet = numOfSheets;
+    btn.classList.add("btn");
+    btn.classList.add("sheet-btns");
+    btn.setAttribute("id", `S${currSheet}`);
+    btn.setAttribute("onclick", `viewSheet(event)`);
+    btn.innerText = `Sheet ${currSheet}`;
+    buttonContainer.appendChild(btn);
+}
+
+
+// ViewSheet Function to Switch betweeen sheets
+function viewSheet(event) {
+    let clickedSheet = event.target.id.slice(1);
+    let matrixArr = JSON.parse(sessionStorage.getItem("mitricesArr"));
+    console.log(matrixArr);
+    console.log(matrixArr[clickedSheet - 1]);
+    console.log(clickedSheet - 1);
+    let matrix = matrixArr[clickedSheet - 1];
+    tbody.innerHTML = '';
+    createNewTable(true, matrix);
+}
+
+
+// Saving my mitrics in arr in sessionStorage
+function saveMatrices() {
+    if (sessionStorage.getItem("mitricesArr")) {
+        let tempMatrixArr = JSON.parse(sessionStorage.getItem("mitricesArr"));
+        let newMatrix = matrix;
+        tempMatrixArr.push(newMatrix);
+        sessionStorage.setItem("mitricesArr", JSON.stringify(tempMatrixArr));
+    } else {
+        let tempArrMatrix = [matrix];
+        sessionStorage.setItem("mitricesArr", JSON.stringify(tempArrMatrix));
+    }
+}
+
+
+function handleAddSheet() {
+    // Adding a new Btn
+    addSheetBtnNow();
+
+    // Changing the heading
+    sheetHeading.innerText = `Sheet ${currSheet}`;
+
+    // Storing the mitrices in Local Storage
+    saveMatrices();
+
+    tbody.innerHTML = '';
+
+    // Using create table function for both cleanUP and Creating new table
+    createMatrix();
+    createNewTable(false);
+    console.log("Reached Save Matrices");
+    // console.log(matrix);
+    saveMatrices();
+}
+
+
+function handleSaveSheet() {
+    saveMatrices();
+}
+
+
+
 
 // Adding functionalities to buttons with click listener
 downloadBtn.addEventListener("click", handleDownload);
 uploadBtn.addEventListener("input", handleUpload);
+addSheetBtn.addEventListener("click", () => handleAddSheet());
+saveSheetBtn.addEventListener("click", () => handleSaveSheet);
 boldBtn.addEventListener("click", () => buttonClickHandler(currCell, "fontWeight", "bold", "normal"));
 italicBtn.addEventListener("click", () => buttonClickHandler(currCell, "fontStyle", "italic", "normal"));
 underlineBtn.addEventListener("click", () => buttonClickHandler(currCell, "textDecoration", "underline", "none"));
