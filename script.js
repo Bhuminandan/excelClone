@@ -43,6 +43,16 @@ let matricesArr = "mitricesArr";
 
 // Creating empty 2D Array of objescts to store the cell data to use in Download button
 let matrix = new Array(rows);
+createMatrix();
+
+// button creation of firstRender
+if (localStorage.getItem(matricesArr)) {
+    for (let i = 1; i < JSON.parse(localStorage.getItem(matricesArr)).length; i++) {
+        addSheetBtnNow(true);
+    }
+}
+
+
 
 function createMatrix() {
     for (let row = 0; row < rows; row++) {
@@ -53,10 +63,21 @@ function createMatrix() {
     }
 }
 
-createMatrix();
 
-
-
+function renderMatrix() {
+    console.log(matrix)
+    matrix.forEach(row => {
+        row.forEach(cellObj => {
+            if (cellObj.id) {
+                let currentCell = document.getElementById(cellObj.id);
+                // currentCell is my html obj, cellObj is js object
+                currentCell.innerText = cellObj.text;
+                // I can pass cssText to style, internally it's handling
+                currentCell.style = cellObj.style;
+            }
+        })
+    })
+}
 
 
 // Colgeneration to Avoid Repetation
@@ -134,7 +155,10 @@ function createNewTable(isUploaded, matrix) {
 }
 
 createNewTable(false);
-
+if (localStorage.getItem(matricesArr)) {
+    matrix = JSON.parse(localStorage.getItem(matricesArr))[0];
+    renderMatrix();
+}
 
 // Text Styling Handler Funcion 
 // Util function for handling click events
@@ -149,6 +173,8 @@ function buttonClickHandler(currCell, styleProperty, styleToAdd, styleRemoverWor
     }
     updateObjInMatrix();
 }
+
+
 
 // Text Styling Functionality
 function renderExistingStyles(currCell) {
@@ -325,16 +351,18 @@ function handleUpload(event) {
 
 
 // Adding a new Btn to access the sheet
-function addSheetBtnNow() {
+function addSheetBtnNow(isFirstReload) {
     const btn = document.createElement("button");
     numOfSheets++;
-    prevSheet = currSheet;
-    currSheet = numOfSheets;
+    if (!isFirstReload) {
+        prevSheet = currSheet;
+        currSheet = numOfSheets;
+    }
     btn.classList.add("btn");
     btn.classList.add("sheet-btns");
-    btn.setAttribute("id", `S${currSheet}`);
+    btn.setAttribute("id", `S${numOfSheets}`);
     btn.setAttribute("onclick", `viewSheet(event)`);
-    btn.innerText = `Sheet ${currSheet}`;
+    btn.innerText = `Sheet ${numOfSheets}`;
     buttonContainer.appendChild(btn);
 }
 
@@ -343,7 +371,7 @@ function addSheetBtnNow() {
 function viewSheet(event) {
     prevSheet = currSheet;
     currSheet = event.target.id.slice(1);
-    let matrixArr = JSON.parse(sessionStorage.getItem(matricesArr));
+    let matrixArr = JSON.parse(localStorage.getItem(matricesArr));
     // console.log(matrixArr);
     // console.log(matrixArr[currSheet - 1]);
     // console.log(currSheet - 1);
@@ -351,8 +379,8 @@ function viewSheet(event) {
 
     // Updating the currSheet in the local storage before switching
     matrixArr[prevSheet - 1] = matrix;
-    console.log(matrixArr[prevSheet - 1]);
-    sessionStorage.setItem(matricesArr, JSON.stringify(matrixArr));
+    // console.log(matrixArr[prevSheet - 1]);
+    localStorage.setItem(matricesArr, JSON.stringify(matrixArr));
 
     // Creating new Matix
     matrix = matrixArr[currSheet - 1];
@@ -361,16 +389,16 @@ function viewSheet(event) {
 }
 
 
-// Saving my mitrics in arr in sessionStorage
+// Saving my mitrics in arr in localStorage
 function saveMatrices() {
-    if (sessionStorage.getItem(matricesArr)) {
-        let tempMatrixArr = JSON.parse(sessionStorage.getItem(matricesArr));
+    if (localStorage.getItem(matricesArr)) {
+        let tempMatrixArr = JSON.parse(localStorage.getItem(matricesArr));
         let newMatrix = matrix;
         tempMatrixArr.push(newMatrix);
-        sessionStorage.setItem(matricesArr, JSON.stringify(tempMatrixArr));
+        localStorage.setItem(matricesArr, JSON.stringify(tempMatrixArr));
     } else {
         let tempArrMatrix = [matrix];
-        sessionStorage.setItem(matricesArr, JSON.stringify(tempArrMatrix));
+        localStorage.setItem(matricesArr, JSON.stringify(tempArrMatrix));
     }
 }
 
@@ -396,7 +424,9 @@ function handleAddSheet() {
 
 
 function handleSaveSheet() {
-    saveMatrices();
+    let matrixArr = JSON.parse(localStorage.getItem(matricesArr));
+    matrixArr[currSheet - 1] = matrix;
+    localStorage.setItem(matricesArr, JSON.stringify(matrixArr));
 }
 
 
@@ -406,7 +436,7 @@ function handleSaveSheet() {
 downloadBtn.addEventListener("click", handleDownload);
 uploadBtn.addEventListener("input", handleUpload);
 addSheetBtn.addEventListener("click", () => handleAddSheet());
-saveSheetBtn.addEventListener("click", () => handleSaveSheet);
+saveSheetBtn.addEventListener("click", () => handleSaveSheet());
 boldBtn.addEventListener("click", () => buttonClickHandler(currCell, "fontWeight", "bold", "normal"));
 italicBtn.addEventListener("click", () => buttonClickHandler(currCell, "fontStyle", "italic", "normal"));
 underlineBtn.addEventListener("click", () => buttonClickHandler(currCell, "textDecoration", "underline", "none"));
